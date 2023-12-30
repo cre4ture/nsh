@@ -1,52 +1,14 @@
 #![cfg_attr(test, feature(test))]
 
-#[macro_use]
+use nsh::{self, mainloop, print_err, shell, STARTED_AT};
 extern crate log;
-#[macro_use]
-extern crate lazy_static;
-extern crate dirs;
-extern crate glob;
-extern crate nix;
-extern crate structopt;
-#[macro_use]
-extern crate failure;
-extern crate pest;
-#[macro_use]
-extern crate pest_derive;
-extern crate backtrace;
+use log::error;
+use nsh::macros;
 
-#[cfg(test)]
-#[macro_use]
-extern crate pretty_assertions;
-#[cfg(test)]
-extern crate test;
-
-#[macro_use]
-mod macros;
-mod bash_server;
-mod builtins;
-mod context_parser;
-mod dircolor;
-mod eval;
-mod expand;
-mod fuzzy;
-mod highlight;
-mod history;
-mod mainloop;
-mod parser;
-mod path;
-mod pattern;
-mod process;
-mod prompt;
-mod shell;
-mod theme;
-mod utils;
-mod variable;
-
-use crate::process::ExitStatus;
-use crate::variable::Value;
 use crossterm::tty::IsTty;
 use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet, Signal};
+use nsh::process::ExitStatus;
+use nsh::variable::Value;
 use std::fs::File;
 use std::path::{Path, PathBuf};
 use std::process::exit;
@@ -66,10 +28,6 @@ fn interactive_mode(shell: shell::Shell) -> ExitStatus {
     }
 
     mainloop::Mainloop::new(shell).run()
-}
-
-lazy_static! {
-    pub static ref STARTED_AT: std::time::SystemTime = std::time::SystemTime::now();
 }
 
 const DEFAULT_PATH: &str = "/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin";

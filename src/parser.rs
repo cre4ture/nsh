@@ -320,7 +320,7 @@ macro_rules! wsnl {
     };
 }
 
-struct ShellParser {
+pub struct ShellParser {
     heredocs: Vec<HereDoc>,
     next_heredoc_index: usize,
 }
@@ -408,7 +408,10 @@ impl ShellParser {
                                             in_pattern = false;
                                         }
                                         LiteralChar::Normal(ch) => lit.push(*ch),
-                                        LiteralChar::Escaped(ch) => lit.push(*ch),
+                                        LiteralChar::Escaped(ch) => {
+                                            //lit.push('\\');
+                                            lit.push(*ch)
+                                        },
                                     }
                                 }
 
@@ -627,18 +630,33 @@ impl ShellParser {
     }
 
     // `a\b\$cd' -> `echo ab$cd'
-    fn visit_escape_sequences(&mut self, pair: Pair<Rule>, escaped_chars: Option<&str>) -> String {
+    fn visit_escape_sequences(&mut self, pair: Pair<Rule>, escaped_chars: Option<&str>,
+                                escape_replacements: Option<(&str, &str)>) -> String {
         let mut s = String::new();
         let mut escaped = false;
         for ch in pair.as_str().chars() {
             if escaped {
                 escaped = false;
-                if let Some(escaped_chars) = escaped_chars {
+                let shall_keep_escaping = if let Some(escaped_chars) = escaped_chars {
                     if !escaped_chars.contains(ch) {
+                        true
+                    } else { false }
+                } else { false };
+
+                let push_ch = if let Some((from, to)) = escape_replacements {
+                    if let Some(pos) = from.find(ch)
+                    {
+                        s.push(to.as_bytes()[pos] as char);
+                        false
+                    } else { true }
+                } else { true };
+
+                if push_ch {
+                    if shall_keep_escaping {
                         s.push('\\');
                     }
+                    s.push(ch);
                 }
-                s.push(ch);
             } else if ch == '\\' {
                 escaped = true;
             } else {
@@ -735,6 +753,8 @@ impl ShellParser {
     fn visit_escaped_word(&mut self, pair: Pair<Rule>, literal_chars: bool) -> Word {
         assert_eq!(pair.as_rule(), Rule::word);
 
+        let replacements = ("rntfv_", "\r\n\t\x0C\x0B ");
+
         let mut spans = Vec::new();
         for span in pair.into_inner() {
             match span.as_rule() {
@@ -756,14 +776,18 @@ impl ShellParser {
                     spans.push(Span::LiteralChars(chars));
                 }
                 Rule::literal_span if !literal_chars => {
-                    spans.push(Span::Literal(self.visit_escape_sequences(span, None)));
+                    spans.push(Span::Literal(self.visit_escape_sequences(span,
+                        Some(""),
+                        Some(replacements))));
                 }
                 Rule::double_quoted_span => {
                     for span_in_quote in span.into_inner() {
                         match span_in_quote.as_rule() {
                             Rule::literal_in_double_quoted_span => {
                                 spans.push(Span::Literal(
-                                    self.visit_escape_sequences(span_in_quote, Some("\"`$")),
+                                    self.visit_escape_sequences(span_in_quote,
+                                        Some("\"`$"),
+                                        Some(replacements)),
                                 ));
                             }
                             Rule::backtick_span => {
@@ -786,7 +810,11 @@ impl ShellParser {
                     for span_in_quote in span.into_inner() {
                         match span_in_quote.as_rule() {
                             Rule::literal_in_single_quoted_span => {
-                                spans.push(Span::Literal(span_in_quote.as_str().to_owned()));
+                                spans.push(Span::Literal(
+                                    self.visit_escape_sequences(span_in_quote,
+                                        Some("'"),
+                                        Some(("", "")),
+                                )));
                             }
                             _ => unreachable!(),
                         }
@@ -829,6 +857,8 @@ impl ShellParser {
                 }
             }
         }
+
+        //println!("end of visit_escaped_word:\n{:?}", spans);
 
         Word(spans)
     }
@@ -1220,6 +1250,7 @@ impl ShellParser {
         let mut inner = pair.into_inner();
         if let Some(pipeline) = inner.next() {
             let commands = self.visit_pipeline(pipeline);
+            //println!("after visit_pipeline:\n{:?}", commands);
             terms.push(Pipeline { commands, run_if });
 
             let next_run_if = inner
