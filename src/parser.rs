@@ -777,7 +777,7 @@ impl ShellParser {
                 }
                 Rule::literal_span if !literal_chars => {
                     spans.push(Span::Literal(self.visit_escape_sequences(span,
-                        Some("$"),
+                        Some("$#"),
                         Some(replacements))));
                 }
                 Rule::double_quoted_span => {
