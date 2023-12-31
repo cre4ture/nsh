@@ -786,7 +786,7 @@ impl ShellParser {
                             Rule::literal_in_double_quoted_span => {
                                 spans.push(Span::Literal(
                                     self.visit_escape_sequences(span_in_quote,
-                                        Some("\"`$#"),
+                                        Some("\"`$#\\"),
                                         Some(replacements)),
                                 ));
                             }
@@ -812,7 +812,7 @@ impl ShellParser {
                             Rule::literal_in_single_quoted_span => {
                                 spans.push(Span::Literal(
                                     self.visit_escape_sequences(span_in_quote,
-                                        Some("'"),
+                                        Some("'\\"),
                                         Some(("", "")),
                                 )));
                             }
