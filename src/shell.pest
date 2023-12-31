@@ -2,14 +2,15 @@
 //  Misc.
 //
 WHITESPACE = _{
-    " " | "\t" | "\r" | "\x0B" | "\x0C"
-    // A trailing backslash at the end of a line.q
+    " " | "\t" | "\r" | "\x0B" | "\x0C" | "\\_"
+    // A trailing backslash at the end of a line.
     | "\\\n"
 }
 
 COMMENT = _{ "#" ~ (!("\n") ~ ANY)* }
 word_char = _{
-    !(
+    !WHITESPACE
+    ~ !(
         "|" | "&" | ";" | " " | "\t" | "\r" | "\n" | "`"
         | "{" | "}" | "<" | ">" | "(" | ")" | "$" | "\"" | "'" | "*" | "?"
     )
@@ -71,7 +72,7 @@ span = _{
     | param_span
     | literal_span
 }
-escaped_char = { "\\" ~ ANY }
+escaped_char = { !WHITESPACE ~ "\\" ~ ANY }
 unescaped_char = { word_char }
 literal_span = ${ (escaped_char | unescaped_char)+ }
 tilde_span = { "~" ~ username? }
