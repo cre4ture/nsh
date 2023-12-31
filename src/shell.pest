@@ -5,6 +5,7 @@ WHITESPACE = _{
     " " | "\t" | "\r" | "\x0B" | "\x0C" | "\\_"
     // A trailing backslash at the end of a line.
     | "\\\n"
+    | stop_parsing_sequence
 }
 
 COMMENT = _{ "#" ~ (!("\n") ~ ANY)* }
@@ -135,7 +136,8 @@ redirect = { fd ~ redirect_direction ~ (word | redirect_to_fd) }
 word_or_redirect = _{ redirect | word | heredoc }
 reserved_word = ${
     (
-        "break"
+        stop_parsing_sequence
+        | "break"
         | "case"
         | "continue"
         | "done"
@@ -274,11 +276,14 @@ cond_primary_inner = _{
     | "(" ~ cond_expr ~ ")"
 }
 
+stop_parsing_sequence = { "\\c" ~ ANY* }
+
 //
 //  Command
 //
 command = {
-    if_command
+    stop_parsing_sequence
+    | if_command
     | case_command
     | while_command
     | arith_for_command
