@@ -2,8 +2,8 @@
 //  Misc.
 //
 WHITESPACE = _{
-    " " | "\t" | "\r"
-    // A trailing backslash at the end of a line.
+    " " | "\t" | "\r" | "\x0B" | "\x0C"
+    // A trailing backslash at the end of a line.q
     | "\\\n"
 }
 
