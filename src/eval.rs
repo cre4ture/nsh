@@ -60,6 +60,13 @@ pub fn evaluate_expr(shell: &mut Shell, expr: &Expr) -> i32 {
     }
 }
 
+pub fn evaluate_initializer_string(shell: &mut Shell, initializer: &Initializer) -> Result<String> {
+    match initializer {
+        Initializer::String(ref word) => return Ok(expand_word_into_string(shell, word)?),
+        _ => return Err(format_err!("string value expected")),
+    }
+}
+
 /// Evaluates a variable initializer.
 ///
 /// ```
@@ -195,8 +202,9 @@ fn run_local_command(
                 LocalDeclaration::Assignment(Assignment {
                     name, initializer, ..
                 }) => {
+                    let name = evaluate_initializer_string(shell, name)?;
                     let value = evaluate_initializer(shell, initializer)?;
-                    shell.set(name, value, true)
+                    shell.set(&name, value, true)
                 }
                 LocalDeclaration::Name(name) => shell.define(name, true),
             }
@@ -378,8 +386,9 @@ fn run_command(shell: &mut Shell, command: &parser::Command, ctx: &Context) -> R
         }
         parser::Command::Assignment { assignments } => {
             for assign in assignments {
+                let name = evaluate_initializer_string(shell, &assign.name)?;
                 let value = evaluate_initializer(shell, &assign.initializer)?;
-                shell.assign(&assign.name, value)
+                shell.assign(&name, value)
             }
             ExitStatus::ExitedWith(0)
         }

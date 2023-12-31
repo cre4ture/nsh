@@ -61,7 +61,7 @@ pub enum Initializer {
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Assignment {
-    pub name: String,
+    pub name: Initializer,
     pub initializer: Initializer,
     pub index: Option<Expr>,
 }
@@ -916,7 +916,13 @@ impl ShellParser {
     fn visit_assignment(&mut self, pair: Pair<Rule>) -> Assignment {
         let mut inner = pair.into_inner();
 
-        let name = inner.next().unwrap().as_span().as_str().to_owned();
+        let name_node = inner.next().unwrap();
+        let name = if name_node.as_rule() == Rule::param_ex_span {
+            Initializer::String(Word(Vec::from([self.visit_param_ex_span(name_node, false)])))
+        } else {
+            Initializer::String(Word(Vec::from([Span::Literal(name_node.as_span().as_str().to_owned())])))
+        };
+
         let index = inner
             .next()
             .unwrap()

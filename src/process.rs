@@ -448,10 +448,12 @@ pub fn run_external_command(
 
             // Load assignments.
             for assignment in assignments {
+                let name = evaluate_initializer_string(shell, &assignment.name)
+                    .expect("failed to evaluate the variable name");
                 let value = evaluate_initializer(shell, &assignment.initializer)
                     .expect("failed to evaluate the initializer");
                 match value {
-                    Value::String(s) => std::env::set_var(&assignment.name, s),
+                    Value::String(s) => std::env::set_var(&name, s),
                     Value::Array(_) => {
                         print_err!("Array assignments in a command is not supported.");
                         std::process::exit(1);
