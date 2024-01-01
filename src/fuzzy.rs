@@ -181,7 +181,7 @@ mod tests {
                 (None, "test dir3".to_owned()),
                 (None, "test dir".to_owned()), // Must be found first, as it's an exact match
             ];
-            for query in vec![
+            for query in [
                 "test dir",   // entry name in quoted string literal
                 "test\\ dir", // entry name with space character escaped
             ] {

@@ -733,7 +733,7 @@ fn test_expr() {
     assert_eq!(
         evaluate_expr(
             &mut shell,
-            &&Expr::Mul(BinaryExpr {
+            &Expr::Mul(BinaryExpr {
                 lhs: Box::new(Expr::Literal(2)),
                 rhs: Box::new(Expr::Add(BinaryExpr {
                     lhs: Box::new(Expr::Literal(3)),
@@ -748,7 +748,7 @@ fn test_expr() {
     assert_eq!(
         evaluate_expr(
             &mut shell,
-            &&Expr::Add(BinaryExpr {
+            &Expr::Add(BinaryExpr {
                 lhs: Box::new(Expr::Literal(1)),
                 rhs: Box::new(Expr::Add(BinaryExpr {
                     lhs: Box::new(Expr::Mul(BinaryExpr {
