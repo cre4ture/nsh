@@ -744,7 +744,7 @@ fn test_expr() {
         2 * (3 + 7)
     );
 
-    shell.set("x", Value::String(3.to_string()), false);
+    shell.set("x", &Value::String(3.to_string()), false);
     assert_eq!(
         evaluate_expr(
             &mut shell,
