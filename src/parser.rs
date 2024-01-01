@@ -1433,7 +1433,7 @@ impl ShellParser {
 
     /// Dumps the parsed pairs for debbuging.
     #[allow(unused)]
-    fn dump(&mut self, pairs: pest::iterators::Pairs<Rule>, level: usize) {
+    fn dump(pairs: pest::iterators::Pairs<Rule>, level: usize) {
         use crossterm::style::{Attribute, Color, SetAttribute, SetForegroundColor};
         for pair in pairs {
             for _ in 0..level {
@@ -1449,7 +1449,7 @@ impl ShellParser {
                 pair.as_span().as_str()
             );
 
-            self.dump(pair.into_inner(), level + 1);
+            Self::dump(pair.into_inner(), level + 1);
         }
     }
 
@@ -1459,7 +1459,7 @@ impl ShellParser {
         let merged_script = script.to_string().replace("\\\n", "");
         let pairs = PestShellParser::parse(Rule::script, &merged_script)
             .unwrap_or_else(|e| panic!("{}", e));
-        self.dump(pairs, 0);
+        Self::dump(pairs, 0);
     }
 }
 

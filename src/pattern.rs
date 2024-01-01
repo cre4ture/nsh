@@ -243,22 +243,17 @@ pub fn replace_pattern(
 ) -> String {
     let mut remaining = text;
     let mut text = String::new();
-    loop {
-        if let Some(m) = pattern_word_match(pattern, remaining) {
-            text += &remaining[..m.start];
-            text += replacement;
+    while let Some(m) = pattern_word_match(pattern, remaining) {
+        text += &remaining[..m.start];
+        text += replacement;
 
-            if remaining.len() < m.end + 1 {
-                // Reached to the end of text.
-                remaining = "";
-                break;
-            }
-
-            remaining = &remaining[(m.end + 1)..];
-        } else {
-            // No matches.
+        if remaining.len() < m.end + 1 {
+            // Reached to the end of text.
+            remaining = "";
             break;
         }
+
+        remaining = &remaining[(m.end + 1)..];
 
         if !replace_all {
             break;
