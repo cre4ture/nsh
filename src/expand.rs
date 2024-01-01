@@ -149,7 +149,7 @@ pub fn expand_param(
         ExpansionOp::GetOrDefaultAndAssign(word)
         | ExpansionOp::GetNullableOrDefaultAndAssign(word) => {
             let content = expand_word_into_string(shell, word)?;
-            shell.set(name, Value::String(content.clone()), false);
+            shell.set(name, &Value::String(content.clone()), false);
             Ok(vec![Some(content)])
         }
         ExpansionOp::Subst { .. } => Ok(vec![Some("".to_owned())]),

@@ -43,7 +43,7 @@ fn shell_main(opt: Opt) {
 
     // Import environment variables.
     for (key, value) in std::env::vars() {
-        shell.set(&key, Value::String(value.to_owned()), false);
+        shell.set(&key, &Value::String(value.to_owned()), false);
     }
 
     if !opt.norc {
@@ -59,7 +59,7 @@ fn shell_main(opt: Opt) {
     }
 
     if shell.get("PATH").is_none() {
-        shell.set("PATH", Value::String(DEFAULT_PATH.to_owned()), false);
+        shell.set("PATH", &Value::String(DEFAULT_PATH.to_owned()), false);
     }
 
     let is_tty = std::io::stdout().is_tty();

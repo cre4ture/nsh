@@ -204,7 +204,7 @@ fn run_local_command(
                 }) => {
                     let name = evaluate_initializer_string(shell, name)?;
                     let value = evaluate_initializer(shell, initializer)?;
-                    shell.set(&name, value, true);
+                    shell.set(&name, &value, true);
                 }
                 LocalDeclaration::Name(name) => shell.define(name, true),
             }
@@ -302,7 +302,7 @@ fn run_for_command(
         let expanded_words = expand_word_into_vec(shell, unexpanded_word, &shell.ifs())?;
         for pattern_word in expanded_words {
             for value in pattern_word.expand_glob()? {
-                shell.set(var_name, Value::String(value), false);
+                shell.set(var_name, &Value::String(value), false);
 
                 let result = run_terms(shell, body, ctx.stdin, ctx.stdout, ctx.stderr);
                 match result {
@@ -381,7 +381,7 @@ fn run_command(shell: &mut Shell, command: &parser::Command, ctx: &Context) -> R
         } => run_arith_for_command(shell, ctx, init, cond, update, body)?,
         parser::Command::LocalDef { declarations } => run_local_command(shell, declarations)?,
         parser::Command::FunctionDef { name, body } => {
-            shell.set(name, Value::Function(body.clone()), true);
+            shell.set(name, &Value::Function(body.clone()), true);
             ExitStatus::ExitedWith(0)
         }
         parser::Command::Assignment { assignments } => {

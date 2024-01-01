@@ -574,7 +574,7 @@ impl ShellParser {
     //        | arith
     //        }
     // assign_op = { "=" }
-    fn visit_assign_expr(&mut self, pair: Pair<Rule>) -> Expr {
+    fn visit_assign_expr(&mut self, pair: &Pair<Rule>) -> Expr {
         let mut inner = pair.clone().into_inner();
         let first = inner.next().unwrap();
         match first.as_rule() {
@@ -605,12 +605,12 @@ impl ShellParser {
         let maybe_op = inner.next();
 
         match pair.as_rule() {
-            Rule::assign => self.visit_assign_expr(pair),
+            Rule::assign => self.visit_assign_expr(&pair),
             Rule::arith => self.visit_arith_expr(pair),
             Rule::term => self.visit_term(pair),
             Rule::factor => self.visit_factor(pair),
             Rule::expr => {
-                let lhs = self.visit_assign_expr(first);
+                let lhs = self.visit_assign_expr(&first);
                 if let Some(op) = maybe_op {
                     let rhs = self.visit_expr(inner.next().unwrap());
                     match op.as_span().as_str() {
@@ -639,7 +639,7 @@ impl ShellParser {
     // `a\b\$cd' -> `echo ab$cd'
     fn visit_escape_sequences(
         &mut self,
-        pair: Pair<Rule>,
+        pair: &Pair<Rule>,
         escaped_chars: Option<&str>,
         escape_replacements: Option<(&str, &str)>,
     ) -> String {
@@ -791,7 +791,7 @@ impl ShellParser {
                 }
                 Rule::literal_span if !literal_chars => {
                     spans.push(Span::Literal(self.visit_escape_sequences(
-                        span,
+                        &span,
                         Some("$#"),
                         Some(replacements),
                     )));
@@ -801,7 +801,7 @@ impl ShellParser {
                         match span_in_quote.as_rule() {
                             Rule::literal_in_double_quoted_span => {
                                 spans.push(Span::Literal(self.visit_escape_sequences(
-                                    span_in_quote,
+                                    &span_in_quote,
                                     Some("\"`$#\\"),
                                     Some(replacements),
                                 )));
@@ -827,7 +827,7 @@ impl ShellParser {
                         match span_in_quote.as_rule() {
                             Rule::literal_in_single_quoted_span => {
                                 spans.push(Span::Literal(self.visit_escape_sequences(
-                                    span_in_quote,
+                                    &span_in_quote,
                                     Some("'\\"),
                                     Some(("", "")),
                                 )));

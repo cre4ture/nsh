@@ -500,7 +500,7 @@ impl Mainloop {
             let ttfp = crate::STARTED_AT.elapsed().unwrap().as_millis();
             info!("Time-To-First-Prompt: {}ms", ttfp);
             let val = crate::variable::Value::String(format!("{}", ttfp));
-            self.shell.set("NSH_TTFP", val, false);
+            self.shell.set("NSH_TTFP", &val, false);
         }
 
         self.prompt_len = prompt_len;

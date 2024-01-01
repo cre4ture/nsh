@@ -28,7 +28,7 @@ pub fn command(ctx: &mut InternalCommandContext) -> ExitStatus {
                 Some(line) => {
                     let trimed_value = line.trim_end();
                     let value = Value::String(trimed_value.to_owned());
-                    ctx.shell.set(&opts.var_name, value, false);
+                    ctx.shell.set(&opts.var_name, &value, false);
                     ExitStatus::ExitedWith(0)
                 }
                 None => {
