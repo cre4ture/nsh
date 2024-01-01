@@ -84,8 +84,8 @@ pub enum ProcessState {
 pub struct JobId(usize);
 
 impl JobId {
-    pub fn new(id: usize) -> JobId {
-        JobId(id)
+    pub fn new(id: usize) -> Self {
+        Self(id)
     }
 }
 
@@ -107,8 +107,8 @@ pub struct Job {
 }
 
 impl Job {
-    pub fn new(id: JobId, pgid: Pid, cmd: String, processes: Vec<Pid>) -> Job {
-        Job {
+    pub fn new(id: JobId, pgid: Pid, cmd: String, processes: Vec<Pid>) -> Self {
+        Self {
             id,
             pgid,
             cmd,
@@ -153,7 +153,7 @@ impl Job {
 }
 
 impl PartialEq for Job {
-    fn eq(&self, other: &Job) -> bool {
+    fn eq(&self, other: &Self) -> bool {
         self.id == other.id
     }
 }
@@ -353,14 +353,14 @@ pub fn run_external_command(
                 trace!("redirection: options={:?}", options);
                 let filepath = expand_word_into_string(shell, wfilepath)?;
                 if let Ok(file) = options.open(&filepath) {
-                    fds.push((file.into_raw_fd(), r.fd as RawFd))
+                    fds.push((file.into_raw_fd(), r.fd as RawFd));
                 } else {
                     warn!("failed to open file: `{}'", filepath);
                     return Ok(ExitStatus::ExitedWith(1));
                 }
             }
             parser::RedirectionType::HereDoc(ref heredoc) => {
-                fds.push((evaluate_heredoc(shell, heredoc)?, r.fd as RawFd))
+                fds.push((evaluate_heredoc(shell, heredoc)?, r.fd as RawFd));
             }
             parser::RedirectionType::UnresolvedHereDoc(_) => {
                 // must be resolved in the parser

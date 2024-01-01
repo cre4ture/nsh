@@ -98,7 +98,7 @@ fn pairs2prompt(mut pairs: Pairs<Rule>) -> Prompt {
 pub fn parse_prompt(prompt: &str) -> Result<Prompt, Box<pest::error::Error<Rule>>> {
     PromptParser::parse(Rule::prompt, prompt)
         .map(pairs2prompt)
-        .map_err(|e| Box::new(e))
+        .map_err(Box::new)
 }
 
 // FIXME: remove unsafe or use external crate
@@ -255,7 +255,7 @@ pub fn draw_prompt(prompt: &Prompt) -> (String, usize) {
         match span {
             Span::Literal(s) => {
                 len += s.len();
-                buf.push_str(s)
+                buf.push_str(s);
             }
             Span::Color(c) => match c {
                 Color::Red => buf.push_str("\x1b[31m"),
@@ -270,17 +270,17 @@ pub fn draw_prompt(prompt: &Prompt) -> (String, usize) {
             },
             Span::Newline => {
                 len = 0;
-                buf.push('\n')
+                buf.push('\n');
             }
             Span::Username => {
                 let username = get_current_username();
                 len += username.len();
-                buf.push_str(&username)
+                buf.push_str(&username);
             }
             Span::Hostname => {
                 let hostname = get_hostname();
                 len += hostname.len();
-                buf.push_str(&hostname)
+                buf.push_str(&hostname);
             }
             Span::CurrentDir => {
                 if let Ok(current_dir) = std::env::current_dir() {
@@ -301,7 +301,7 @@ pub fn draw_prompt(prompt: &Prompt) -> (String, usize) {
             Span::RepoStatus => {
                 let hostname = get_repo_info();
                 len += hostname.len();
-                buf.push_str(&hostname)
+                buf.push_str(&hostname);
             }
             Span::If {
                 condition,
@@ -318,7 +318,7 @@ pub fn draw_prompt(prompt: &Prompt) -> (String, usize) {
                     spans: spans.to_vec(),
                 });
                 len += result_len;
-                buf.push_str(&result)
+                buf.push_str(&result);
             }
         }
     }

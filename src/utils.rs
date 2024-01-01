@@ -8,8 +8,8 @@ pub struct FdFile {
 }
 
 impl FdFile {
-    pub fn new(fd: RawFd) -> FdFile {
-        FdFile { fd }
+    pub fn new(fd: RawFd) -> Self {
+        Self { fd }
     }
 
     pub fn read_line(&self) -> Option<String> {

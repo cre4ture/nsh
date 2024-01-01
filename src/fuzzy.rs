@@ -17,8 +17,8 @@ impl FuzzyVec {
 
     /// Creates a `FuzzyVec` from a slice.
     #[cfg(test)]
-    pub fn from_vec<T: Into<String>>(vec: Vec<T>) -> FuzzyVec {
-        let mut res = FuzzyVec::new();
+    pub fn from_vec<T: Into<String>>(vec: Vec<T>) -> Self {
+        let mut res = Self::new();
         for elem in vec {
             res.append(elem.into());
         }

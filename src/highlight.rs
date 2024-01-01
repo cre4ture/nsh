@@ -128,6 +128,6 @@ mod benchmarks {
         );
         b.iter(|| {
             highlight(&parsed, &mut shell);
-        })
+        });
     }
 }

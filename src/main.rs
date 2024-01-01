@@ -127,7 +127,7 @@ fn init_logger() {
                 log_colors.color(record.level()),
                 record.file().unwrap_or_else(|| record.target()),
                 message,
-            ))
+            ));
         })
         .chain(log_file)
         .apply()
@@ -145,7 +145,7 @@ fn main() {
 
         print_err!("{}", info);
         print_err!("{:#?}", backtrace::Backtrace::new());
-        print_err!("Something went wrong. Check out ~/.nsh.log and please file this bug on GitHub: https://github.com/nuta/nsh/issues")
+        print_err!("Something went wrong. Check out ~/.nsh.log and please file this bug on GitHub: https://github.com/nuta/nsh/issues");
     }));
 
     let opt = Opt::from_args();

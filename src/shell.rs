@@ -65,8 +65,8 @@ pub struct Shell {
 }
 
 impl Shell {
-    pub fn new(history_path: &Path) -> Shell {
-        Shell {
+    pub fn new(history_path: &Path) -> Self {
+        Self {
             shell_pgid: getpid(),
             script_name: "".to_owned(),
             interactive: false,

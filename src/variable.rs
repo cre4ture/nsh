@@ -20,8 +20,8 @@ pub struct Variable {
 impl Variable {
     /// Creates a `Variable`. This does not add to the
     /// any scope.
-    pub fn new(value: Option<Value>) -> Variable {
-        Variable { value }
+    pub fn new(value: Option<Value>) -> Self {
+        Self { value }
     }
 
     /// Returns a reference to the inner value.
@@ -124,7 +124,7 @@ impl Frame {
 
     /// Sets `$<index>`.
     pub fn set_nth_arg(&mut self, index: usize, value: Value) {
-        self.set(&index.to_string(), value)
+        self.set(&index.to_string(), value);
     }
 
     /// Removes `$<index>`.

@@ -155,7 +155,7 @@ impl Mainloop {
                 Ok(true) => {
                     loop {
                         if let Ok(ev) = crossterm::event::read() {
-                            self.handle_event(Event::Input(ev))
+                            self.handle_event(Event::Input(ev));
                         }
 
                         match crossterm::event::poll(Duration::from_millis(0)) {
@@ -259,12 +259,12 @@ impl Mainloop {
         match ev {
             Event::Input(input) if self.history_mode => {
                 if let TermEvent::Key(key) = input {
-                    self.handle_key_event_in_history_mode(&key)
+                    self.handle_key_event_in_history_mode(&key);
                 }
             }
             Event::Input(input) => {
                 if let TermEvent::Key(key) = input {
-                    self.handle_key_event(&key)
+                    self.handle_key_event(&key);
                 }
             }
             Event::ScreenResized => {
@@ -962,8 +962,8 @@ struct UserInput {
 }
 
 impl UserInput {
-    pub fn new() -> UserInput {
-        UserInput {
+    pub fn new() -> Self {
+        Self {
             cursor: 0,
             input: String::with_capacity(256),
             indices: Vec::with_capacity(256),

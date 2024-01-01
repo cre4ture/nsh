@@ -23,8 +23,8 @@ pub struct PatternWord {
 }
 
 impl PatternWord {
-    pub fn new(fragments: Vec<LiteralOrGlob>) -> PatternWord {
-        PatternWord { fragments }
+    pub fn new(fragments: Vec<LiteralOrGlob>) -> Self {
+        Self { fragments }
     }
 
     pub fn fragments(&self) -> &[LiteralOrGlob] {

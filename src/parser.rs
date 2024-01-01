@@ -778,11 +778,11 @@ impl ShellParser {
                         match ch.as_rule() {
                             Rule::escaped_char => {
                                 let lit_ch = ch.as_str().chars().nth(1).unwrap();
-                                chars.push(LiteralChar::Escaped(lit_ch))
+                                chars.push(LiteralChar::Escaped(lit_ch));
                             }
                             Rule::unescaped_char => {
                                 let lit_ch = ch.as_str().chars().next().unwrap();
-                                chars.push(LiteralChar::Normal(lit_ch))
+                                chars.push(LiteralChar::Normal(lit_ch));
                             }
                             _ => unreachable!(),
                         }
@@ -807,16 +807,16 @@ impl ShellParser {
                                 )));
                             }
                             Rule::backtick_span => {
-                                spans.push(self.visit_command_span(span_in_quote, true))
+                                spans.push(self.visit_command_span(span_in_quote, true));
                             }
                             Rule::command_span => {
-                                spans.push(self.visit_command_span(span_in_quote, true))
+                                spans.push(self.visit_command_span(span_in_quote, true));
                             }
                             Rule::param_span => {
-                                spans.push(self.visit_param_span(span_in_quote, true))
+                                spans.push(self.visit_param_span(span_in_quote, true));
                             }
                             Rule::param_ex_span => {
-                                spans.push(self.visit_param_ex_span(span_in_quote, true))
+                                spans.push(self.visit_param_ex_span(span_in_quote, true));
                             }
                             _ => unreachable!(),
                         }
@@ -1379,7 +1379,7 @@ impl ShellParser {
                                             target: RedirectionType::HereDoc(
                                                 self.heredocs[index].clone(),
                                             ),
-                                        })
+                                        });
                                     }
                                     _ => new_redirects.push(redirect),
                                 }
@@ -1389,7 +1389,7 @@ impl ShellParser {
                                 argv,
                                 redirects: new_redirects,
                                 assignments,
-                            })
+                            });
                         }
                         _ => new_commands.push(command),
                     }

@@ -800,7 +800,7 @@ mod benchmarks {
     fn simple_oneliner_parsring_bench(b: &mut Bencher) {
         b.iter(|| {
             parse("git reset --", 0);
-        })
+        });
     }
 
     #[bench]
@@ -810,6 +810,6 @@ mod benchmarks {
                 "ls -avh $(echo hello) \"string ${ls:=bar $(cowsay) } boo\" yay",
                 0,
             );
-        })
+        });
     }
 }
