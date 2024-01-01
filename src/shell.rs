@@ -158,7 +158,7 @@ impl Shell {
     #[inline]
     pub fn assign(&mut self, key: &str, value: &Value) {
         let defined_as_local = self.current_frame().get(key).is_some();
-        self.set(key, &value, defined_as_local);
+        self.set(key, value, defined_as_local);
     }
 
     pub fn define(&mut self, key: &str, is_local: bool) {
