@@ -408,10 +408,7 @@ impl ShellParser {
                                             in_pattern = false;
                                         }
                                         LiteralChar::Normal(ch) => lit.push(*ch),
-                                        LiteralChar::Escaped(ch) => {
-                                            //lit.push('\\');
-                                            lit.push(*ch)
-                                        },
+                                        LiteralChar::Escaped(ch) => lit.push(*ch),
                                     }
                                 }
 
@@ -858,8 +855,6 @@ impl ShellParser {
             }
         }
 
-        //println!("end of visit_escaped_word:\n{:?}", spans);
-
         Word(spans)
     }
 
@@ -1256,7 +1251,6 @@ impl ShellParser {
         let mut inner = pair.into_inner();
         if let Some(pipeline) = inner.next() {
             let commands = self.visit_pipeline(pipeline);
-            //println!("after visit_pipeline:\n{:?}", commands);
             terms.push(Pipeline { commands, run_if });
 
             let next_run_if = inner
