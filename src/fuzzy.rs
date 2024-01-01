@@ -3,7 +3,7 @@ use crate::theme::ThemeColor;
 ///
 /// A ordered `Vec` which supports fuzzy search.
 ///
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FuzzyVec {
     /// The *unordered* array of a haystack.
     entries: Vec<(Option<ThemeColor>, String)>,
@@ -11,10 +11,8 @@ pub struct FuzzyVec {
 
 impl FuzzyVec {
     /// Creates a `FuzzyVec`.
-    pub fn new() -> FuzzyVec {
-        FuzzyVec {
-            entries: Vec::new(),
-        }
+    pub fn new() -> Self {
+        Self::default()
     }
 
     /// Creates a `FuzzyVec` from a slice.
@@ -28,8 +26,8 @@ impl FuzzyVec {
     }
 
     /// Creates a `FuzzyVec` with the given capacity.
-    pub fn with_capacity(cap: usize) -> FuzzyVec {
-        FuzzyVec {
+    pub fn with_capacity(cap: usize) -> Self {
+        Self {
             entries: Vec::with_capacity(cap),
         }
     }
@@ -102,7 +100,7 @@ fn fuzzy_search<'a>(
 
     /// Check if entries contain the query characters with correct order.
     fn is_fuzzily_matched(s: &str, query: &str) -> bool {
-        let tmp = s.replace(" ", "\\ ");
+        let tmp = s.replace(' ', "\\ ");
         let mut iter = tmp.chars();
         for q in query.chars() {
             loop {

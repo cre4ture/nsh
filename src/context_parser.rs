@@ -125,8 +125,8 @@ struct ContextParser {
 }
 
 impl ContextParser {
-    fn new(input: &str, cursor: usize) -> ContextParser {
-        ContextParser {
+    fn new(input: &str, cursor: usize) -> Self {
+        Self {
             state: State::EnvOrArgv0,
             input: input.to_owned(),
             cursor,

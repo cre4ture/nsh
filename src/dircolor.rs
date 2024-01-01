@@ -8,15 +8,14 @@ struct DirColorEntry {
     color: String,
 }
 
+#[derive(Default)]
 pub struct DirColor {
     map: HashMap<String, DirColorEntry>,
 }
 
 impl DirColor {
-    pub fn new() -> DirColor {
-        DirColor {
-            map: HashMap::new(),
-        }
+    pub fn new() -> Self {
+        Self::default()
     }
 
     pub fn load(&mut self, dircolors: &str) {

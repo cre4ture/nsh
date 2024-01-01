@@ -17,9 +17,9 @@ type Result<I> = std::result::Result<I, Error>;
 pub fn expand_alias(shell: &Shell, argv: &[Word]) -> Vec<Word> {
     argv
         // Get the first word.
-        .get(0)
+        .first()
         // Get the first span in the first word.
-        .and_then(|word| word.spans().get(0))
+        .and_then(|word| word.spans().first())
         // Make sure that the span is a literal (not parameters, etc.).
         .and_then(|span| match span {
             Span::Literal(lit) => Some(lit),

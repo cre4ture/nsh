@@ -9,7 +9,7 @@ lazy_static! {
 macro_rules! print_err {
     () => { eprintln!(""); };
     ($fmt:expr) => {
-        if *crate::macros::COLORS_ENABLED {
+        if *$crate::macros::COLORS_ENABLED {
             eprintln!(concat!("{}{}nsh: ", $fmt, "{}"),
                 ::crossterm::style::SetAttribute(::crossterm::style::Attribute::Bold),
                 ::crossterm::style::SetForegroundColor(::crossterm::style::Color::Yellow),
@@ -20,7 +20,7 @@ macro_rules! print_err {
     };
     () => { eprintln!(""); };
     ($fmt:expr, $($arg:tt)*) => {
-        if *crate::macros::COLORS_ENABLED {
+        if *$crate::macros::COLORS_ENABLED {
             eprintln!(concat!("{}{}nsh: ", $fmt, "{}"),
                 ::crossterm::style::SetAttribute(::crossterm::style::Attribute::Bold),
                 ::crossterm::style::SetForegroundColor(::crossterm::style::Color::Yellow),

@@ -19,7 +19,7 @@ pub fn command(ctx: &mut InternalCommandContext) -> ExitStatus {
         };
         // args should include `command`
         let args = match ctx.argv[1..]
-            .into_iter()
+            .iter()
             .map(|s| CString::new(s.as_bytes()))
             .collect::<Result<Vec<_>, _>>()
         {

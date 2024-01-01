@@ -19,7 +19,7 @@ pub fn command(ctx: &mut InternalCommandContext) -> ExitStatus {
             (
                 // relative path
                 Path::new(&old_dir)
-                    .join(dir.to_string())
+                    .join(dir)
                     .to_string_lossy()
                     .into_owned(),
                 true,

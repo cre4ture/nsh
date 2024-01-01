@@ -32,7 +32,7 @@ pub fn bash_server(tx_event: mpsc::Sender<Event>) -> mpsc::Sender<BashRequest> {
                     trace!("completion: query={:?}", words);
                     let started_at = SystemTime::now();
 
-                    match run_bash(&mut bash, words, current_word) {
+                    match run_bash(&mut bash, &words, current_word) {
                         Some(comps) => {
                             tx_event.send(Event::Completion(comps)).ok();
                         }
@@ -68,7 +68,7 @@ lazy_static! {
     static ref PRELOAD_SCRIPT: String = {
         let mut script = String::new();
 
-        for cmd_name in PRELOADED_COMPS.iter() {
+        for cmd_name in &PRELOADED_COMPS {
             if let Some(comp_file) = look_for_comp_file(cmd_name) {
                 script += &format!("source \"{}\"", escape(&comp_file));
             }
@@ -124,7 +124,7 @@ fn guess_completion_cmd_name(cmd_name: &str) -> String {
     }
 }
 
-fn run_bash(bash: &mut Option<Child>, words: Vec<String>, current_word: usize) -> Option<FuzzyVec> {
+fn run_bash(bash: &mut Option<Child>, words: &[String], current_word: usize) -> Option<FuzzyVec> {
     if words.is_empty() {
         return None;
     }
@@ -132,11 +132,7 @@ fn run_bash(bash: &mut Option<Child>, words: Vec<String>, current_word: usize) -
     let cmd_name = &words[0];
     let needs_comp_file = !PRELOADED_COMPS.contains(cmd_name.as_str());
     let comp_file = if needs_comp_file {
-        if let Some(comp_file) = look_for_comp_file(cmd_name) {
-            Some(comp_file)
-        } else {
-            return None;
-        }
+        look_for_comp_file(cmd_name)
     } else {
         None
     };

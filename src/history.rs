@@ -14,7 +14,7 @@ pub struct History {
 }
 
 impl History {
-    pub fn new(history_file: &Path) -> History {
+    pub fn new(history_file: &Path) -> Self {
         // Loads the history file.
         let mut warned = false;
         let mut path2cwd = HashMap::new();
@@ -42,7 +42,7 @@ impl History {
             }
         }
 
-        History {
+        Self {
             path: history_file.to_owned(),
             history,
             path2cwd,
@@ -51,6 +51,10 @@ impl History {
 
     pub fn len(&self) -> usize {
         self.history.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.history.is_empty()
     }
 
     pub fn nth_last(&self, nth: usize) -> Option<String> {
@@ -111,17 +115,15 @@ impl History {
     }
 }
 
+#[derive(Default)]
 pub struct HistorySelector {
     offset: usize,
     input: String,
 }
 
 impl HistorySelector {
-    pub fn new() -> HistorySelector {
-        HistorySelector {
-            offset: 0,
-            input: String::new(),
-        }
+    pub fn new() -> Self {
+        Self::default()
     }
 
     pub fn reset(&mut self) {

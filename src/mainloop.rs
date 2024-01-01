@@ -82,8 +82,8 @@ impl Drop for Mainloop {
 }
 
 impl Mainloop {
-    pub fn new(shell: Shell) -> Mainloop {
-        Mainloop {
+    pub fn new(shell: Shell) -> Self {
+        Self {
             shell,
             history_selector: HistorySelector::new(),
             input: UserInput::new(),
