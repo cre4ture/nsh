@@ -95,8 +95,10 @@ fn pairs2prompt(mut pairs: Pairs<Rule>) -> Prompt {
     visit_prompt(pairs.next().unwrap())
 }
 
-pub fn parse_prompt(prompt: &str) -> Result<Prompt, pest::error::Error<Rule>> {
-    PromptParser::parse(Rule::prompt, prompt).map(pairs2prompt)
+pub fn parse_prompt(prompt: &str) -> Result<Prompt, Box<pest::error::Error<Rule>>> {
+    PromptParser::parse(Rule::prompt, prompt)
+        .map(pairs2prompt)
+        .map_err(|e| Box::new(e))
 }
 
 // FIXME: remove unsafe or use external crate

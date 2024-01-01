@@ -61,17 +61,13 @@ pub enum Initializer {
 
 impl std::convert::From<String> for Initializer {
     fn from(value: String) -> Self {
-        Self::String(Word(vec![Span::Literal(
-            value
-        )]))
+        Self::String(Word(vec![Span::Literal(value)]))
     }
 }
 
 impl std::convert::From<&str> for Initializer {
     fn from(value: &str) -> Self {
-        Self::String(Word(vec![Span::Literal(
-            value.into()
-        )]))
+        Self::String(Word(vec![Span::Literal(value.into())]))
     }
 }
 
