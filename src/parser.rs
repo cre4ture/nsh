@@ -627,8 +627,12 @@ impl ShellParser {
     }
 
     // `a\b\$cd' -> `echo ab$cd'
-    fn visit_escape_sequences(&mut self, pair: Pair<Rule>, escaped_chars: Option<&str>,
-                                escape_replacements: Option<(&str, &str)>) -> String {
+    fn visit_escape_sequences(
+        &mut self,
+        pair: Pair<Rule>,
+        escaped_chars: Option<&str>,
+        escape_replacements: Option<(&str, &str)>,
+    ) -> String {
         let mut s = String::new();
         let mut escaped = false;
         for ch in pair.as_str().chars() {
@@ -637,16 +641,23 @@ impl ShellParser {
                 let shall_keep_escaping = if let Some(escaped_chars) = escaped_chars {
                     if !escaped_chars.contains(ch) {
                         true
-                    } else { false }
-                } else { false };
+                    } else {
+                        false
+                    }
+                } else {
+                    false
+                };
 
                 let push_ch = if let Some((from, to)) = escape_replacements {
-                    if let Some(pos) = from.find(ch)
-                    {
+                    if let Some(pos) = from.find(ch) {
                         s.push(to.as_bytes()[pos] as char);
                         false
-                    } else { true }
-                } else { true };
+                    } else {
+                        true
+                    }
+                } else {
+                    true
+                };
 
                 if push_ch {
                     if shall_keep_escaping {
@@ -773,19 +784,21 @@ impl ShellParser {
                     spans.push(Span::LiteralChars(chars));
                 }
                 Rule::literal_span if !literal_chars => {
-                    spans.push(Span::Literal(self.visit_escape_sequences(span,
+                    spans.push(Span::Literal(self.visit_escape_sequences(
+                        span,
                         Some("$#"),
-                        Some(replacements))));
+                        Some(replacements),
+                    )));
                 }
                 Rule::double_quoted_span => {
                     for span_in_quote in span.into_inner() {
                         match span_in_quote.as_rule() {
                             Rule::literal_in_double_quoted_span => {
-                                spans.push(Span::Literal(
-                                    self.visit_escape_sequences(span_in_quote,
-                                        Some("\"`$#\\"),
-                                        Some(replacements)),
-                                ));
+                                spans.push(Span::Literal(self.visit_escape_sequences(
+                                    span_in_quote,
+                                    Some("\"`$#\\"),
+                                    Some(replacements),
+                                )));
                             }
                             Rule::backtick_span => {
                                 spans.push(self.visit_command_span(span_in_quote, true))
@@ -807,10 +820,10 @@ impl ShellParser {
                     for span_in_quote in span.into_inner() {
                         match span_in_quote.as_rule() {
                             Rule::literal_in_single_quoted_span => {
-                                spans.push(Span::Literal(
-                                    self.visit_escape_sequences(span_in_quote,
-                                        Some("'\\"),
-                                        Some(("", "")),
+                                spans.push(Span::Literal(self.visit_escape_sequences(
+                                    span_in_quote,
+                                    Some("'\\"),
+                                    Some(("", "")),
                                 )));
                             }
                             _ => unreachable!(),
@@ -913,9 +926,13 @@ impl ShellParser {
 
         let name_node = inner.next().unwrap();
         let name = if name_node.as_rule() == Rule::param_ex_span {
-            Initializer::String(Word(Vec::from([self.visit_param_ex_span(name_node, false)])))
+            Initializer::String(Word(Vec::from(
+                [self.visit_param_ex_span(name_node, false)],
+            )))
         } else {
-            Initializer::String(Word(Vec::from([Span::Literal(name_node.as_span().as_str().to_owned())])))
+            Initializer::String(Word(Vec::from([Span::Literal(
+                name_node.as_span().as_str().to_owned(),
+            )])))
         };
 
         let index = inner

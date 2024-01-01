@@ -9,7 +9,11 @@ pub fn command(ctx: &mut InternalCommandContext) -> ExitStatus {
         let command = match CString::new(command.as_bytes()) {
             Ok(args) => args,
             Err(_) => {
-                writeln!(ctx.stderr, "nsh: exec: invalid command (perhaps it includes a NUL character?)").ok();
+                writeln!(
+                    ctx.stderr,
+                    "nsh: exec: invalid command (perhaps it includes a NUL character?)"
+                )
+                .ok();
                 return ExitStatus::Return;
             }
         };
@@ -21,7 +25,11 @@ pub fn command(ctx: &mut InternalCommandContext) -> ExitStatus {
         {
             Ok(args) => args,
             Err(_) => {
-                writeln!(ctx.stderr, "nsh: exec: invalid command (perhaps it includes a NUL character?)").ok();
+                writeln!(
+                    ctx.stderr,
+                    "nsh: exec: invalid command (perhaps it includes a NUL character?)"
+                )
+                .ok();
                 return ExitStatus::Return;
             }
         };
