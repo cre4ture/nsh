@@ -59,6 +59,22 @@ pub enum Initializer {
     String(Word),
 }
 
+impl std::convert::From<String> for Initializer {
+    fn from(value: String) -> Self {
+        Self::String(Word(vec![Span::Literal(
+            value
+        )]))
+    }
+}
+
+impl std::convert::From<&str> for Initializer {
+    fn from(value: &str) -> Self {
+        Self::String(Word(vec![Span::Literal(
+            value.into()
+        )]))
+    }
+}
+
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Assignment {
     pub name: Initializer,
@@ -1691,16 +1707,12 @@ pub fn test_simple_commands() {
                         assignments: vec![
                             Assignment {
                                 name: "PORT".into(),
-                                initializer: Initializer::String(Word(vec![Span::Literal(
-                                    "1234".into()
-                                )])),
+                                initializer: "1234".into(),
                                 index: None,
                             },
                             Assignment {
                                 name: "RAILS_ENV".into(),
-                                initializer: Initializer::String(Word(vec![Span::Literal(
-                                    "production".into()
-                                )])),
+                                initializer: "production".into(),
                                 index: None,
                             }
                         ],
