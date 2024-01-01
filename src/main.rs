@@ -3,7 +3,6 @@
 use nsh::{self, mainloop, print_err, shell, STARTED_AT};
 extern crate log;
 use log::error;
-use nsh::macros;
 
 use crossterm::tty::IsTty;
 use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet, Signal};

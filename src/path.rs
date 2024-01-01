@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use std::fs::read_dir;
 
 /// A cached `$PATH` table.
+#[derive(Default)]
 pub struct PathTable {
     /// `$PATH`
     path: String,
@@ -13,12 +14,8 @@ pub struct PathTable {
 }
 
 impl PathTable {
-    pub fn new() -> PathTable {
-        PathTable {
-            path: String::new(),
-            table: HashMap::new(),
-            fuzzy: FuzzyVec::new(),
-        }
+    pub fn new() -> Self {
+        Self::default()
     }
 
     pub fn fuzzy_vec(&self) -> &FuzzyVec {

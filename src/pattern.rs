@@ -58,7 +58,7 @@ impl PatternWord {
             for frag in self.fragments {
                 match frag {
                     LiteralOrGlob::Literal(lit) => {
-                        pattern += lit.replace("*", "[*]").replace("?", "[?]").as_str();
+                        pattern += lit.replace('*', "[*]").replace('?', "[?]").as_str();
                     }
                     LiteralOrGlob::AnyChar => {
                         pattern.push('?');
@@ -150,7 +150,7 @@ fn regex_match(pattern: &[RegexSpan], text: &str, index: usize) -> Option<usize>
         index
     );
 
-    match pattern.get(0) {
+    match pattern.first() {
         Some(RegexSpan::AnyChar) | Some(RegexSpan::Literal(_)) => {
             if text.is_empty() {
                 return None;

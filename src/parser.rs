@@ -320,17 +320,15 @@ macro_rules! wsnl {
     };
 }
 
+#[derive(Default)]
 pub struct ShellParser {
     heredocs: Vec<HereDoc>,
     next_heredoc_index: usize,
 }
 
 impl ShellParser {
-    pub fn new() -> ShellParser {
-        ShellParser {
-            heredocs: Vec::new(),
-            next_heredoc_index: 0,
-        }
+    pub fn new() -> Self {
+        Self::default()
     }
 
     // proc_subst_direction = { "<" | ">" }
@@ -639,11 +637,7 @@ impl ShellParser {
             if escaped {
                 escaped = false;
                 let shall_keep_escaping = if let Some(escaped_chars) = escaped_chars {
-                    if !escaped_chars.contains(ch) {
-                        true
-                    } else {
-                        false
-                    }
+                    !escaped_chars.contains(ch)
                 } else {
                     false
                 };

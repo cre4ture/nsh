@@ -287,7 +287,7 @@ pub fn draw_prompt(prompt: &Prompt) -> (String, usize) {
                     // "/Users/chandler/games/doom" -> "~/venus/games/doom"
                     if let Some(home_dir) = dirs::home_dir() {
                         let home_dir = home_dir.to_str().unwrap();
-                        if path.starts_with(&home_dir) {
+                        if path.starts_with(home_dir) {
                             path = path.replace(home_dir, "~");
                         }
                     }

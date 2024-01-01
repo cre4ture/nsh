@@ -130,7 +130,7 @@ impl Mainloop {
         let (tx, rx) = mpsc::channel();
         let tx2 = tx.clone();
         std::thread::spawn(move || {
-            let signals = Signals::new(&[signal_hook::SIGWINCH]).unwrap();
+            let signals = Signals::new([signal_hook::SIGWINCH]).unwrap();
             for signal in signals {
                 match signal {
                     signal_hook::SIGWINCH => {
@@ -492,7 +492,7 @@ impl Mainloop {
         .ok();
 
         let (prompt_str, prompt_len) = self.build_prompt();
-        queue!(stdout, Print(prompt_str.replace("\n", "\r\n"))).ok();
+        queue!(stdout, Print(prompt_str.replace('\n', "\r\n"))).ok();
         stdout.flush().ok();
 
         // Report the Time-To-First-Prompt (TTFP).
@@ -534,7 +534,7 @@ impl Mainloop {
         if self.clear_above > 0 {
             // Redraw the prompt since it has been cleared.
             let (prompt_str, _) = self.build_prompt();
-            queue!(stdout, Print("\r"), Print(prompt_str.replace("\n", "\r\n"))).ok();
+            queue!(stdout, Print("\r"), Print(prompt_str.replace('\n', "\r\n"))).ok();
         }
 
         // Print the highlighted input.
@@ -544,7 +544,7 @@ impl Mainloop {
             Print("\r"),
             cursor::MoveRight(self.prompt_len as u16),
             Clear(ClearType::UntilNewLine),
-            Print(h.replace("\n", "\r\n"))
+            Print(h.replace('\n', "\r\n"))
         )
         .ok();
 
@@ -695,7 +695,7 @@ impl Mainloop {
             .completions
             .search(self.current_span_text().unwrap_or(""))
             .iter()
-            .map(|(c, s)| (*c, s.to_string().replace(" ", "\\ ")))
+            .map(|(c, s)| (*c, s.to_string().replace(' ', "\\ ")))
             .collect();
         self.comp_selected = min(
             self.comp_selected,
@@ -818,7 +818,7 @@ impl Mainloop {
             // Select the next history.
             (KeyCode::Down, NONE) | (KeyCode::Char('n'), CTRL) => {
                 self.hist_selected += 1;
-                let max = min(self.hist_display_len as usize, self.hist_entries.len());
+                let max = min(self.hist_display_len, self.hist_entries.len());
                 if self.hist_selected > max.saturating_sub(1) {
                     self.hist_selected = max.saturating_sub(1);
                 }
@@ -836,7 +836,7 @@ impl Mainloop {
             }
             // An any key input.
             (KeyCode::Char(ch), NONE) => {
-                if self.input.len() < self.hist_input_max as usize {
+                if self.input.len() < self.hist_input_max {
                     self.input.insert(ch);
                 }
             }
@@ -899,7 +899,7 @@ impl Mainloop {
 
         // Render history_lines.
         for i in 0..self.lines.saturating_sub(2) {
-            if let Some(entry) = self.hist_entries.get(i as usize) {
+            if let Some(entry) = self.hist_entries.get(i) {
                 if i == self.hist_selected {
                     queue!(
                         stdout,
@@ -1012,9 +1012,9 @@ impl UserInput {
 
     pub fn move_by(&mut self, offset: isize) {
         if offset < 0 {
-            self.cursor = self.cursor.saturating_sub(offset.abs() as usize);
+            self.cursor = self.cursor.saturating_sub(offset.unsigned_abs());
         } else {
-            self.cursor = min(self.len(), self.cursor + offset.abs() as usize);
+            self.cursor = min(self.len(), self.cursor + offset.unsigned_abs());
         }
     }
 
@@ -1151,7 +1151,7 @@ fn path_completion(pattern: &str, only_dirs: bool) -> FuzzyVec {
     let mut dir = if pattern.is_empty() {
         current_dir.clone()
     } else if let Some(pattern) = pattern.strip_prefix('~') {
-        home_dir.join(&pattern.trim_start_matches('/'))
+        home_dir.join(pattern.trim_start_matches('/'))
     } else {
         PathBuf::from(pattern)
     };

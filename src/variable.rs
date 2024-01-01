@@ -36,7 +36,7 @@ impl Variable {
             Some(Value::String(value)) => value,
             Some(Value::Function(_)) => "(function)",
             // Bash returns the first element in the array.
-            Some(Value::Array(elems)) => match elems.get(0) {
+            Some(Value::Array(elems)) => match elems.first() {
                 Some(elem) => elem.as_str(),
                 _ => "",
             },
@@ -61,16 +61,15 @@ impl Variable {
 }
 
 /// A variable scope.
+#[derive(Default)]
 pub struct Frame {
     /// A `(variable name, varible)` map.
     vars: HashMap<String, Rc<Variable>>,
 }
 
 impl Frame {
-    pub fn new() -> Frame {
-        Frame {
-            vars: HashMap::new(),
-        }
+    pub fn new() -> Self {
+        Self::default()
     }
 
     pub fn define(&mut self, key: &str) {
