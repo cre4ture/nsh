@@ -38,7 +38,7 @@ pub fn evaluate_expr(shell: &mut Shell, expr: &Expr) -> i32 {
         Expr::Div(BinaryExpr { lhs, rhs }) => evaluate_expr(shell, lhs) / evaluate_expr(shell, rhs),
         Expr::Assign { name, rhs } => {
             let value = evaluate_expr(shell, rhs);
-            shell.assign(name, Value::String(value.to_string()));
+            shell.assign(name, &Value::String(value.to_string()));
             value
         }
         Expr::Eq(lhs, rhs) => bool_to_int!(evaluate_expr(shell, lhs) == evaluate_expr(shell, rhs)),
@@ -49,12 +49,12 @@ pub fn evaluate_expr(shell: &mut Shell, expr: &Expr) -> i32 {
         Expr::Ge(lhs, rhs) => bool_to_int!(evaluate_expr(shell, lhs) >= evaluate_expr(shell, rhs)),
         Expr::Inc(name) => {
             let value = shell.get_var_as_i32(name).unwrap_or(0) + 1;
-            shell.assign(name, Value::String(value.to_string()));
+            shell.assign(name, &Value::String(value.to_string()));
             value
         }
         Expr::Dec(name) => {
             let value = shell.get_var_as_i32(name).unwrap_or(0) - 1;
-            shell.assign(name, Value::String(value.to_string()));
+            shell.assign(name, &Value::String(value.to_string()));
             value
         }
     }
@@ -388,7 +388,7 @@ fn run_command(shell: &mut Shell, command: &parser::Command, ctx: &Context) -> R
             for assign in assignments {
                 let name = evaluate_initializer_string(shell, &assign.name)?;
                 let value = evaluate_initializer(shell, &assign.initializer)?;
-                shell.assign(&name, value);
+                shell.assign(&name, &value);
             }
             ExitStatus::ExitedWith(0)
         }
